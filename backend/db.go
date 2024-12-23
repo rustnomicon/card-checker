@@ -64,11 +64,11 @@ func getCards(db *sql.DB) ([]Card, error) {
 	return cards, nil
 }
 
-func isAuthUser(db *sql.DB, sha string) bool {
+func isAuthUser(db *sql.DB, token string) bool {
 	sqlStatement := `SELECT * FROM cards_auth where sha = $1`
 
 	var id int
-	err := db.QueryRow(sqlStatement, sha).Scan(&id)
+	err := db.QueryRow(sqlStatement, token).Scan(&id)
 
 	if err != nil {
 		if err == sql.ErrNoRows {

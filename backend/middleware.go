@@ -1,11 +1,12 @@
 package main
 
 import (
+	"database/sql"
 	"net/http"
 	"strings"
 )
 
-func authMiddleware(next http.Handler) http.Handler {
+func authMiddleware(next http.Handler, db_connect *sql.DB) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
 		if !strings.HasPrefix(authHeader, "Bearer ") {
@@ -14,7 +15,7 @@ func authMiddleware(next http.Handler) http.Handler {
 		}
 
 		token := strings.TrimPrefix(authHeader, "Bearer ")
-		db_connect := connect()
+
 		if !isAuthUser(db_connect, token) {
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return
